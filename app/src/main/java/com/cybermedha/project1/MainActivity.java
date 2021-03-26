@@ -2,15 +2,19 @@ package com.cybermedha.project1;
 
 import androidx.appcompat.app.AppCompatActivity;
 import android.annotation.SuppressLint;
+
 import android.os.Bundle;
 import android.view.View;
 
+import com.google.android.exoplayer2.ExoPlayer;
 import com.google.android.exoplayer2.MediaItem;
 import com.google.android.exoplayer2.SimpleExoPlayer;
 import com.google.android.exoplayer2.ui.PlayerView;
 import com.google.android.exoplayer2.util.Util;
 
-public class MainActivity extends AppCompatActivity  {
+
+
+public class MainActivity extends AppCompatActivity implements ExoPlayer.EventListener{
     PlayerView playerView;
     private SimpleExoPlayer player;
     private boolean playWhenReady = true;
@@ -21,6 +25,8 @@ public class MainActivity extends AppCompatActivity  {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        //this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
 
         playerView = findViewById(R.id.video_view);
 
@@ -33,12 +39,15 @@ public class MainActivity extends AppCompatActivity  {
         player = new SimpleExoPlayer.Builder(this).build();
         playerView.setPlayer(player);
 
-        MediaItem mediaItem = MediaItem.fromUri("https://moctobpltc-i.akamaihd.net/hls/live/571329/eight/playlist.m3u8");
+        MediaItem mediaItem = MediaItem.fromUri("https://moctobpltc-i.akamaihd.net/hls/live/571329/eight/playlist.m3u8"); //french.tv  https://moctobpltc-i.akamaihd.net/hls/live/571329/eight/playlist.m3u8
         player.setMediaItem(mediaItem);
 
         player.setPlayWhenReady(playWhenReady);
         player.seekTo(currentWindow, playbackPosition);
         player.prepare();
+
+
+
 
     }
 
@@ -73,6 +82,7 @@ public class MainActivity extends AppCompatActivity  {
         if (player != null) {
             playWhenReady = player.getPlayWhenReady();
             playbackPosition = player.getCurrentPosition();
+            System.out.println("Play pos"+playbackPosition+"\nbuffered upto: "+player.getBufferedPosition());
             currentWindow = player.getCurrentWindowIndex();
             player.release();
             player = null;
