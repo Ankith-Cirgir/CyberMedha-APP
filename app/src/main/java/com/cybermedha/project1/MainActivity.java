@@ -39,15 +39,12 @@ public class MainActivity extends AppCompatActivity implements ExoPlayer.EventLi
         player = new SimpleExoPlayer.Builder(this).build();
         playerView.setPlayer(player);
 
-        MediaItem mediaItem = MediaItem.fromUri("https://moctobpltc-i.akamaihd.net/hls/live/571329/eight/playlist.m3u8"); //french.tv  https://moctobpltc-i.akamaihd.net/hls/live/571329/eight/playlist.m3u8
+        MediaItem mediaItem = MediaItem.fromUri("https://cdn.viewliveevents.net/337008605/demo.weblive.viewliveevents.net/playlist.m3u8"); //french.tv  https://moctobpltc-i.akamaihd.net/hls/live/571329/eight/playlist.m3u8
         player.setMediaItem(mediaItem);
 
         player.setPlayWhenReady(playWhenReady);
         player.seekTo(currentWindow, playbackPosition);
         player.prepare();
-
-
-
 
     }
 
