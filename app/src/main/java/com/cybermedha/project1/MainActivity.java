@@ -4,19 +4,26 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.annotation.SuppressLint;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 
+import com.google.android.exoplayer2.ExoPlaybackException;
 import com.google.android.exoplayer2.ExoPlayer;
 import com.google.android.exoplayer2.MediaItem;
+import com.google.android.exoplayer2.Player;
 import com.google.android.exoplayer2.SimpleExoPlayer;
 import com.google.android.exoplayer2.ui.PlayerView;
 import com.google.android.exoplayer2.util.Util;
 
+import java.lang.annotation.Annotation;
 
 
-public class MainActivity extends AppCompatActivity implements ExoPlayer.EventListener{
+public class MainActivity extends AppCompatActivity implements ExoPlayer.EventListener {
+
+    private PlaybackStateListener playbackStateListener;
+
     PlayerView playerView;
-    private SimpleExoPlayer player;
+    public static SimpleExoPlayer player;
     private boolean playWhenReady = true;
     private int currentWindow = 0;
     private long playbackPosition = 0;
@@ -25,6 +32,8 @@ public class MainActivity extends AppCompatActivity implements ExoPlayer.EventLi
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        playbackStateListener = new PlaybackStateListener();
 
         //this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
 
@@ -36,15 +45,23 @@ public class MainActivity extends AppCompatActivity implements ExoPlayer.EventLi
     }
 
     private void initializePlayer() {
+
         player = new SimpleExoPlayer.Builder(this).build();
         playerView.setPlayer(player);
 
-        MediaItem mediaItem = MediaItem.fromUri("https://cdn.viewliveevents.net/337008605/demo.weblive.viewliveevents.net/playlist.m3u8"); //french.tv  https://moctobpltc-i.akamaihd.net/hls/live/571329/eight/playlist.m3u8
-        player.setMediaItem(mediaItem);
+        MediaItem mediaItem2 = MediaItem.fromUri("https://videofiles.glocaltv.net/video_intro.mp4"); //internship  https://cdn.viewliveevents.net/337008605/demo.weblive.viewliveevents.net/playlist.m3u8
+        player.setMediaItem(mediaItem2);
+        player.prepare();
+
+        //MediaItem mediaItem = MediaItem.fromUri("https://cdn.viewliveevents.net/337008605/demo.weblive.viewliveevents.net/playlist.m3u8"); //french.tv  https://moctobpltc-i.akamaihd.net/hls/live/571329/eight/playlist.m3u8   https://cdn.viewliveevents.net/337008605/demo.weblive.viewliveevents.net/playlist.m3u8
+        //player.setMediaItem(mediaItem);
+
+        player.addListener(playbackStateListener);
 
         player.setPlayWhenReady(playWhenReady);
         player.seekTo(currentWindow, playbackPosition);
         player.prepare();
+
 
     }
 
@@ -79,6 +96,8 @@ public class MainActivity extends AppCompatActivity implements ExoPlayer.EventLi
         if (player != null) {
             playWhenReady = player.getPlayWhenReady();
             playbackPosition = player.getCurrentPosition();
+            player.removeListener(playbackStateListener);
+
             System.out.println("Play pos"+playbackPosition+"\nbuffered upto: "+player.getBufferedPosition());
             currentWindow = player.getCurrentWindowIndex();
             player.release();
